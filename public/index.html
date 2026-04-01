@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CollegeLink</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- AUTH SCREENS -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-box">🎓</div>
+      <div>
+        <h2>CollegeLink</h2>
+        <p>Connect &amp; Create</p>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h3 class="auth-title">Welcome back</h3>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@pccoe.edu">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••">
+      </div>
+      <div id="loginError" class="auth-error" style="display:none"></div>
+      <button class="btn-submit" onclick="doLogin()">Sign In</button>
+      <p class="auth-switch">No account? <a onclick="showRegister()">Register</a></p>
+      <p class="auth-demo">Demo: alex@pccoe.edu / password123</p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" style="display:none">
+      <h3 class="auth-title">Create account</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Alex Johnson">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="you@pccoe.edu">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Department</label>
+          <input type="text" id="regDept" placeholder="Computer Engineering">
+        </div>
+        <div class="form-group">
+          <label>Year</label>
+          <select id="regYear">
+            <option value="">Year</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="min 6 characters">
+      </div>
+      <div id="regError" class="auth-error" style="display:none"></div>
+      <button class="btn-submit" onclick="doRegister()">Create Account</button>
+      <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="container" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-box"><img src="Sync_up.jpeg" alt="Logo"  ;></div>
+      <div>
+        <h2>CollegeLink</h2>
+        <p>Connect &amp; Create</p>
+      </div>
+    </div>
+
+    <div class="menu">
+      <div class="menu-item active" data-section="feed"   onclick="switchSection('feed',this)">🏠 Feed</div>
+      <div class="menu-item"        data-section="collab" onclick="switchSection('collab',this)">🤝 Collaborations</div>
+      <div class="menu-item"        data-section="events" onclick="switchSection('events',this)">📅 Events</div>
+      <div class="menu-item"        data-section="clubs"  onclick="switchSection('clubs',this)">🏛️ Clubs</div>
+    </div>
+
+    <div class="profile" id="sidebarProfile">
+      <img src="https://i.pravatar.cc/40" id="sidebarAvatar" alt="avatar">
+      <div>
+        <h4 id="sidebarName">Loading…</h4>
+        <p onclick="logout()" style="cursor:pointer;color:#e05c5c;">Sign out</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Search for students, projects, skills or topics...">
+      </div>
+      <div class="icons">
+        <div class="icon" id="notifBell" onclick="toggleNotif()">
+          🔔
+          <span class="badge" id="notifBadge" style="display:none">0</span>
+        </div>
+        <div class="icon">💬</div>
+        <div class="icon" onclick="toggleTheme()" id="themeToggle">☀️</div>
+      </div>
+    </div>
+
+    <!-- FEED SECTION -->
+    <div id="section-feed" class="section active">
+      <div class="tabs" id="feedTabs">
+        <div class="tab active" onclick="switchFeedTab(this,'all')">All Feed</div>
+        <div class="tab" onclick="switchFeedTab(this,'achievement')">Achievements</div>
+        <div class="tab" onclick="switchFeedTab(this,'project')">Projects</div>
+      </div>
+      <div class="feed" id="feedList">
+        <div class="loading-spinner">Loading feed…</div>
+      </div>
+    </div>
+
+    <!-- COLLAB SECTION -->
+    <div id="section-collab" class="section">
+      <div class="section-header">
+        <div>
+          <h2>Find a Team</h2>
+          <p class="section-sub">Join projects that need your skills</p>
+        </div>
+        <button class="btn-accent" onclick="openModal('collabModal')">+ Post Project</button>
+      </div>
+      <div class="filter-row" id="collabFilters">
+        <span class="chip active" onclick="filterCollabs(this,'all')">All</span>
+        <span class="chip" onclick="filterCollabs(this,'web')">Web Dev</span>
+        <span class="chip" onclick="filterCollabs(this,'ml')">ML / AI</span>
+        <span class="chip" onclick="filterCollabs(this,'mobile')">Mobile</span>
+        <span class="chip" onclick="filterCollabs(this,'design')">Design</span>
+      </div>
+      <div class="collab-grid" id="collabList">
+        <div class="loading-spinner">Loading collaborations…</div>
+      </div>
+    </div>
+
+    <!-- EVENTS SECTION -->
+    <div id="section-events" class="section">
+      <div class="section-header">
+        <div>
+          <h2>Events at PCCOE</h2>
+          <p class="section-sub">Hackathons, workshops, seminars &amp; more</p>
+        </div>
+      </div>
+      <div class="filter-row" id="eventFilters">
+        <span class="chip active" onclick="filterEvents(this,'all')">All</span>
+        <span class="chip" onclick="filterEvents(this,'upcoming')">Upcoming</span>
+        <span class="chip" onclick="filterEvents(this,'ongoing')">Ongoing</span>
+        <span class="chip" onclick="filterEvents(this,'done')">Completed</span>
+        <span class="chip" onclick="filterEvents(this,'hackathon','type')">Hackathons</span>
+        <span class="chip" onclick="filterEvents(this,'workshop','type')">Workshops</span>
+      </div>
+      <div class="events-grid" id="eventList">
+        <div class="loading-spinner">Loading events…</div>
+      </div>
+
+      <!-- Certificates subsection -->
+      <div class="certs-section" id="certsSection" style="display:none">
+        <h3>🏅 My Certificates</h3>
+        <div class="certs-grid" id="certsList"></div>
+      </div>
+    </div>
+
+    <!-- CLUBS SECTION -->
+    <div id="section-clubs" class="section">
+      <div class="section-header">
+        <div>
+          <h2>Clubs at PCCOE</h2>
+          <p class="section-sub">Join communities that match your passion</p>
+        </div>
+      </div>
+      <div class="filter-row" id="clubFilters">
+        <span class="chip active" onclick="filterClubs(this,'all')">All Clubs</span>
+        <span class="chip" onclick="filterClubs(this,'tech')">Tech</span>
+        <span class="chip" onclick="filterClubs(this,'cultural')">Cultural</span>
+        <span class="chip" onclick="filterClubs(this,'sports')">Sports</span>
+        <span class="chip" onclick="filterClubs(this,'social')">Social</span>
+      </div>
+      <div class="clubs-grid" id="clubList">
+        <div class="loading-spinner">Loading clubs…</div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+
+    <div class="panel">
+      <h3>Suggested Connections</h3>
+      <div id="suggestedList">
+        <div class="loading-spinner">Loading…</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Trending Topics</h3>
+      <div class="trend">#hackathon2025 <p>2.1k posts</p></div>
+      <div class="trend">#GSoC2024 <p>1.4k posts</p></div>
+      <div class="trend">#internship <p>856 posts</p></div>
+      <div class="trend">#startup <p>632 posts</p></div>
+    </div>
+
+  </div>
+
+</div><!-- /app -->
+
+
+<!-- NOTIFICATION PANEL -->
+<div id="notifPanel" class="notif-panel" style="display:none">
+  <div class="notif-header">
+    <strong>Notifications</strong>
+    <span onclick="markAllRead()">Mark all read</span>
+  </div>
+  <div id="notifList"></div>
+</div>
+
+
+<!-- ===== MODALS ===== -->
+
+<!-- Create Post Modal -->
+<div id="postModal" class="modal-overlay" onclick="closeModalOutside(event,'postModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Create Post</h3>
+      <button class="modal-close" onclick="closeModal('postModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="postType">
+        <option value="general">💬 General</option>
+        <option value="achievement">🏆 Achievement</option>
+        <option value="project">🚀 Project</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>What's on your mind?</label>
+      <textarea id="postContent" rows="4" placeholder="Share your achievement, project, or idea…"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Tags <small>(comma separated)</small></label>
+      <input type="text" id="postTags" placeholder="#hackathon, #AI, #PCCOE">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('postModal')">Cancel</button>
+      <button class="btn-accent" onclick="submitPost()">Publish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Collaboration Modal -->
+<div id="collabModal" class="modal-overlay" onclick="closeModalOutside(event,'collabModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Post a Collaboration</h3>
+      <button class="modal-close" onclick="closeModal('collabModal')">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Project Title</label>
+        <input type="text" id="collabTitle" placeholder="What are you building?">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="collabCat">
+          <option value="web">Web Development</option>
+          <option value="ml">ML / AI</option>
+          <option value="mobile">Mobile</option>
+          <option value="design">Design</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="collabDesc" rows="3" placeholder="Describe your project…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Roles Needed <small>(comma separated)</small></label>
+        <input type="text" id="collabRoles" placeholder="React Dev, Designer…">
+      </div>
+      <div class="form-group">
+        <label>Skills Required</label>
+        <input type="text" id="collabSkills" placeholder="React, Python, Figma…">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Team Size</label>
+        <input type="number" id="collabSize" value="4" min="2" max="10">
+      </div>
+      <div class="form-group">
+        <label>Urgency</label>
+        <select id="collabUrgency">
+          <option value="open">Open</option>
+          <option value="urgent">Urgent</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('collabModal')">Cancel</button>
+      <button class="btn-accent" onclick="submitCollab()">Post Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Certificate Viewer Modal -->
+<div id="certModal" class="modal-overlay" onclick="closeModalOutside(event,'certModal')">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>Certificate</h3>
+      <button class="modal-close" onclick="closeModal('certModal')">✕</button>
+    </div>
+    <div class="cert-preview" id="certPreview"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('certModal')">Close</button>
+      <button class="btn-accent" onclick="showToast('Certificate downloaded! ✅','success')">⬇ Download</button>
+      <button class="btn-ghost" onclick="showToast('Shared to LinkedIn! 🔗','success')">🔗 LinkedIn</button>
+    </div>
+  </div>
+</div>
+
+<!-- Apply to Collab Modal -->
+<div id="applyModal" class="modal-overlay" onclick="closeModalOutside(event,'applyModal')">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 id="applyTitle">Apply to Project</h3>
+      <button class="modal-close" onclick="closeModal('applyModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Why do you want to join? <small>(optional)</small></label>
+      <textarea id="applyMessage" rows="3" placeholder="Tell them about your relevant skills or experience…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('applyModal')">Cancel</button>
+      <button class="btn-accent" onclick="submitApply()">Send Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
